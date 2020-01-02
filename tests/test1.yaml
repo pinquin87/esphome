@@ -1292,6 +1292,17 @@ switch:
       remote_transmitter.transmit_raw:
         code: [1000, -1000]
   - platform: template
+    name: RC6
+    turn_on_action:
+      remote_transmitter.transmit_rc6:
+        address: 0x00
+        command: 0x0B
+  - platform: template
+    name: RC6
+    turn_on_action:
+      remote_transmitter.transmit_raw:
+        code: [1000, -1000]
+  - platform: template
     name: Living Room Lights
     id: livingroom_lights
     optimistic: True
