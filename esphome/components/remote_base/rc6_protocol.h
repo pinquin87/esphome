@@ -7,10 +7,10 @@ namespace esphome {
 namespace remote_base {
 
 struct RC6Data {
-  uint8_t address;
-  uint8_t command;
+  uint8_t data;
+  uint8_t nbits;
 
-  bool operator==(const RC6Data &rhs) const { return address == rhs.address && command == rhs.command; }
+  bool operator==(const RC6Data &rhs) const { return data == rhs.data && nbits == rhs.nbits; }
 };
 
 class RC6Protocol : public RemoteProtocol<RC6Data> {
@@ -24,12 +24,12 @@ DECLARE_REMOTE_PROTOCOL(RC6)
 
 template<typename... Ts> class RC6Action : public RemoteTransmitterActionBase<Ts...> {
  public:
-  TEMPLATABLE_VALUE(uint8_t, address)
-  TEMPLATABLE_VALUE(uint8_t, command)
+  TEMPLATABLE_VALUE(uint8_t, data)
+  TEMPLATABLE_VALUE(uint8_t, nbits)
   void encode(RemoteTransmitData *dst, Ts... x) override {
     RC6Data data{};
-    data.address = this->address_.value(x...);
-    data.command = this->command_.value(x...);
+    data.data = this->data_.value(x...);
+    data.nbits = this->nbits_.value(x...);
     RC6Protocol().encode(dst, data);
   }
 };
