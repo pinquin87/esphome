@@ -6,11 +6,11 @@ namespace remote_base {
 
 static const char *TAG = "remote.rc6";
 
-static const uint8_t T1_US =444;
-static const uint8_t T2_US =889;
-static const uint8_t HDR_MARK_US =2666;
-static const uint8_t HDR_SPACE_US =889;
-static const uint8_t RPT_LENGTH_US = 46000;
+static const uint32_t T1_US =444;
+static const uint32_t T2_US =889;
+static const uint32_t HDR_MARK_US =2666;
+static const uint32_t HDR_SPACE_US =889;
+static const uint32_t RPT_LENGTH_US = 46000;
 static const uint32_t TOGGLE_MASK = 0x10000UL;
 static const uint32_t TOGGLE_MASK_36 = 0x8000;
 
@@ -56,10 +56,8 @@ optional<RC6Data> RC6Protocol::decode(RemoteReceiveData src) {
       .nbits = 0,
   };
 
-  uint8_t nbits;
+  uint8_t nbits = 0;
   uint64_t out_data = 0;
-  uint8_t used = 0;
-  uint8_t offset = 1;
 
   // RC6 starts with mark with time HDR_MARK_US and space with time HDR_SPACE_US
  if (!(src.expect_mark(HDR_MARK_US) && src.expect_space(HDR_SPACE_US)))
@@ -73,10 +71,7 @@ optional<RC6Data> RC6Protocol::decode(RemoteReceiveData src) {
   // control 8 bit
   // info 8 bit   
 
-  // Nr. of bits can be 24 or 36(xbox) so get the size
-  uint8_t NBITS = src.size;
-
-  for (int bit = NBITS - 2; bit >= 0; bit--) {
+  for (int bit = src.size() - 2; bit >= 0; bit--) {
     // 4th bit is trailer bit with bitlength 2T
     int t = (bit == 4) ? (T2_US) : (T1_US);
     if (src.expect_space(t) && src.expect_mark(t)) {
